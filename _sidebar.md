@@ -93,6 +93,7 @@
         * [AWS S3 协议应用场景](/ufile/s3/s3_application)
     * 增值服务
         * [图片处理服务](/ufile/service/pic)
+        * [文档预览](/ufile/guide/doc_preview)
 * [API 列表](/ufile/api_reference)
 * [SDK 列表](/ufile/tools/sdk)
 * 解决方案与最佳实践
