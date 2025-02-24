@@ -590,15 +590,15 @@ us3cli cp us3://<桶名字>/<文件Key> us3://<桶名字>/<文件Key> [--recursi
 
 本命令用于目录的增量上传或增量下载
 
-增量上传
+### 增量上传
 
-### 命令格式
+#### 命令格式
 
 ```
 us3cli sync <本地目录> us3://<桶名字>/<文件Key> [--reduce][--mode cache|local][--ruler modtime|etag][--speedlimit <速度限制>][--retrycount <重试次数>][--exclude <通配符表达式>][--rexclude <正则表达式>][--include <通配符表达式>][--rinclude <正则表达式>][--parallel <请求并发数>][--metadata <Key>=<value1>[,<key2>=<value2>]...][--mimetype <多媒体文件格式>][--storageclass <存储类型>][--force]
 ```
 
-### 参数说明
+#### 参数说明
 
 ```
       --accesskey <string>     :用于访问us3的API公钥或Token公钥
@@ -635,7 +635,7 @@ us3cli sync <本地目录> us3://<桶名字>/<文件Key> [--reduce][--mode cache
 
 增量上传文件夹后，将本地文件删除，再次使用local模式增量，会将bucket中的文件删除以保持US3 Bucket和本地同步
 
-### 使用示例
+#### 使用示例
 
 - cache模式，以本地缓存中保存的修改时间为标准，同步本地文件
 
@@ -691,15 +691,16 @@ us3cli sync <本地目录> us3://<桶名字>/<文件Key> [--reduce][--mode cache
 ./us3cli sync /root/test us3://bucket/path --metadata "key1=value1,key2=value2"
 ```
 
-增量下载
 
-### 命令格式
+### 增量下载
+
+#### 命令格式
 
 ```
 us3cli sync us3://<桶名字>/<文件Key> <本地目录> [--update][--ignore-existing][--delete][--backup-dir][--speedlimit <速度限制>][--retrycount <重试次数>][--exclude <通配符表达式>][--rexclude <正则表达式>][--include <通配符表达式>][--rinclude <正则表达式>][--parallel <请求并发数>][--metadata <Key>=<value1>[,<key2>=<value2>]...][--mimetype <多媒体文件格式>][--storageclass <存储类型>][--force]
 ```
 
-### 参数说明
+#### 参数说明
 
 ```
       --accesskey <string>     :用于访问us3的API公钥或Token公钥
@@ -733,7 +734,7 @@ us3cli sync us3://<桶名字>/<文件Key> <本地目录> [--update][--ignore-exi
 下次再从远端同步时，如果：1）本地文件的etag和修改时间和缓存中记录的一致；2）本地文件的修改时间晚于缓存中记录的修改时间。上述两种情况，不会再从远端同步。
 否则，如果遇到已存在文件，会询问是否从远端覆盖（如果设置了--force，不会询问）
 
-### 使用示例
+#### 使用示例
 
 - 默认，只要是同名文件都会覆盖，覆盖前会询问
 
