@@ -588,7 +588,9 @@ us3cli cp us3://<桶名字>/<文件Key> us3://<桶名字>/<文件Key> [--recursi
 
 ## sync
 
-本命令用于目录的增量上传
+本命令用于目录的增量上传或增量下载
+
+增量上传
 
 ### 命令格式
 
@@ -687,6 +689,68 @@ us3cli sync <本地目录> us3://<桶名字>/<文件Key> [--reduce][--mode cache
 
 ```
 ./us3cli sync /root/test us3://bucket/path --metadata "key1=value1,key2=value2"
+```
+
+增量下载
+
+### 命令格式
+
+```
+us3cli sync us3://<桶名字>/<文件Key> <本地目录> [--update][--ignore-existing][--delete][--backup-dir][--speedlimit <速度限制>][--retrycount <重试次数>][--exclude <通配符表达式>][--rexclude <正则表达式>][--include <通配符表达式>][--rinclude <正则表达式>][--parallel <请求并发数>][--metadata <Key>=<value1>[,<key2>=<value2>]...][--mimetype <多媒体文件格式>][--storageclass <存储类型>][--force]
+```
+
+### 参数说明
+
+```
+      --accesskey <string>     :用于访问us3的API公钥或Token公钥
+      --config <string>        :当前命令临时指定配置名/配置文件路径
+      --endpoint <string>      :固定域名，可通过地域和域名页查看
+      --exclude <string>       :不包含当前通配符的文件名
+  -f, --force                  :是否强制同步，在加入该选项后，同步删除时，不弹出确认信息
+  -h, --help                   :当前命令使用说明
+      --include <string>       :包含当前通配符的文件名
+      --metadata <string>      :指定元数据信息，多个元数据以","分隔，如 "key1=value,key2=value2",其他分隔符暂不支持
+      --mimetype <string>      :指定mimetype上传
+      --parallel <int>         :请求并发数，默认值为10
+      --reduce                 :是否以精简模式执行（不展示进度）
+  -r, --retrycount: <int>      :失败重试次数,默认值：10
+      --rexclude <string>      :不包含当前正则表达式的文件名
+      --rinclude <string>      :包含当前正则表达式的文件名
+      
+      --update                 :是否覆盖本地的同名文件，默认覆盖且覆盖前会询问
+      --ignore-existing        :优先级高于--update和--force，只要设置了必然不会对本地文件进行覆盖
+      --delete                 :是否删除本地存在而us3中不存在的文件，需要和--backup-dir一起使用
+      --backup-dir             :--delete删除的文件备份的本地目录
+      
+      --secretkey <string>     :用于访问us3的API私钥或Token私钥  
+  -s, --speedlimit <string>    :平均速度限制(单位可以是B,KB,MB，不带单位默认以B/s计算)，默认200MB/s
+      --storageclass <string>  :指定存储类型,对应有效值：STANDARD, IA, ARCHIVE，默认值：STANDARD
+```
+
+增量模式说明：
+远端同步到本地文件成功后，会在缓存中记录本地文件的修改时间和etag。
+加上--update选项后，对于本地存在的同名文件，会执行如下判断：
+下次再从远端同步时，如果：1）本地文件的etag和修改时间和缓存中记录的一致；2）本地文件的修改时间晚于缓存中记录的修改时间。上述两种情况，不会再从远端同步。
+否则，如果遇到已存在文件，会询问是否从远端覆盖（如果设置了--force，不会询问）
+
+### 使用示例
+
+- 默认，只要是同名文件都会覆盖，覆盖前会询问
+
+```
+./us3cli sync us3://bucket/path /root/test
+```
+
+- 推荐用法，同名文件会按照【增量模式说明】中逻辑，判断是否覆盖
+
+```
+./us3cli sync us3://bucket/path /root/test --update --force
+```
+
+- 对于本地存在而us3中不存在的文件，会从本地目录删除并备份到--backup-dir
+
+```
+./us3cli sync us3://bucket/path /root/test --update --force --delete --backup-dir /root/backdir
 ```
 
 ## rcat
